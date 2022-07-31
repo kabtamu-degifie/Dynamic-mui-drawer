@@ -18,8 +18,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import Collapse from "@mui/material/Collapse";
+import DraftsIcon from "@mui/icons-material/Drafts";
+import SendIcon from "@mui/icons-material/Send";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import StarBorder from "@mui/icons-material/StarBorder";
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -61,7 +67,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: "flex-end",
 }));
@@ -69,6 +74,22 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function App() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [openedMenu, setOpenedMenu] = React.useState([]);
+
+  const handleClick = (menu) => {
+    const menus = [...openedMenu];
+    const index = menus.indexOf(menu.id);
+    if (index !== -1) {
+      menus.splice(index, 1);
+    } else {
+      menus.push(menu.id);
+    }
+    setOpenedMenu(menus);
+  };
+
+  const isSelectedMenu = (menu) => {
+    return openedMenu.indexOf(menu.id) !== -1;
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -76,6 +97,113 @@ export default function App() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const menuItems = [
+    {
+      id: 1,
+      url: "/",
+      text: "Dashboard",
+      icon: <InboxIcon />,
+    },
+
+    {
+      id: 2,
+      text: "Accounts",
+      icon: <InboxIcon />,
+      children: [
+        {
+          id: 3,
+          url: "/role",
+          text: "Role",
+          icon: <MailIcon />,
+        },
+        {
+          id: 4,
+          url: "/user",
+          text: "User",
+          icon: <MailIcon />,
+        },
+        {
+          id: 5,
+          text: "Students",
+          icon: <MailIcon />,
+          children: [
+            {
+              id: 6,
+              text: "Summer",
+              icon: <MailIcon />,
+              children: [
+                {
+                  id: 7,
+                  url: "/role",
+                  text: "Batch 1",
+                  icon: <MailIcon />,
+                },
+                {
+                  id: 8,
+                  url: "/user",
+                  text: "Batch 2",
+                  icon: <MailIcon />,
+                },
+              ],
+            },
+            {
+              id: 9,
+              url: "/user",
+              text: "Regular",
+              icon: <MailIcon />,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 10,
+      text: "Accounts 1",
+      icon: <InboxIcon />,
+      children: [
+        {
+          id: 11,
+          url: "/role1",
+          text: "Role 1",
+          icon: <MailIcon />,
+        },
+        {
+          id: 12,
+          url: "/user1",
+          text: "User 1",
+          icon: <MailIcon />,
+        },
+      ],
+    },
+  ];
+
+  const getMenuWithChildren = (menu, pl = 2) => {
+    return (
+      <React.Fragment key={menu.id}>
+        <ListItemButton sx={{ pl }} onClick={() => handleClick(menu)}>
+          <ListItemIcon>{menu.icon}</ListItemIcon>
+          <ListItemText primary={menu.text} />
+          {isSelectedMenu(menu) ? <ExpandMore /> : <ChevronRightIcon />}
+        </ListItemButton>
+        <Collapse in={isSelectedMenu(menu)} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {menu.children.map((child) => {
+              if (child.children) {
+                return getMenuWithChildren(child, pl + 2);
+              }
+              return (
+                <ListItemButton key={child.id} sx={{ pl: pl + 2 }}>
+                  <ListItemIcon>{child.icon}</ListItemIcon>
+                  <ListItemText primary={child.text} />
+                </ListItemButton>
+              );
+            })}
+          </List>
+        </Collapse>
+      </React.Fragment>
+    );
   };
 
   return (
@@ -121,29 +249,19 @@ export default function App() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {menuItems.map((menuItem) => {
+            if (menuItem.children) {
+              return getMenuWithChildren(menuItem);
+            }
+            return (
+              <ListItem key={menuItem.id} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>{menuItem.icon}</ListItemIcon>
+                  <ListItemText primary={menuItem.text} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
         </List>
       </Drawer>
       <Main open={open}>
