@@ -16,16 +16,21 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+import {
+  People,
+  SupervisedUserCircle,
+  Dashboard,
+  Group,
+  GroupAdd,
+  PeopleAltSharp,
+  AccountBalance,
+  GroupOutlined,
+} from "@mui/icons-material";
 import MailIcon from "@mui/icons-material/Mail";
 import Collapse from "@mui/material/Collapse";
-import DraftsIcon from "@mui/icons-material/Drafts";
-import SendIcon from "@mui/icons-material/Send";
-import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
 
-const drawerWidth = 260;
+const drawerWidth = 250;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -104,47 +109,60 @@ export default function App() {
       id: 1,
       url: "/",
       text: "Dashboard",
-      icon: <InboxIcon />,
+      icon: <Dashboard />,
     },
 
     {
       id: 2,
-      text: "Accounts",
-      icon: <InboxIcon />,
+      text: "User Management",
+      icon: <SupervisedUserCircle />,
       children: [
         {
           id: 3,
           url: "/role",
           text: "Role",
-          icon: <MailIcon />,
+          icon: <People />,
         },
         {
           id: 4,
           url: "/user",
-          text: "User",
-          icon: <MailIcon />,
+          text: "Account",
+          icon: <People />,
         },
         {
           id: 5,
           text: "Students",
-          icon: <MailIcon />,
+          icon: <Group />,
           children: [
             {
               id: 6,
               text: "Summer",
-              icon: <MailIcon />,
+              icon: <GroupAdd />,
               children: [
                 {
                   id: 7,
-                  url: "/role",
                   text: "Batch 1",
-                  icon: <MailIcon />,
+                  icon: <AccountBalance />,
+                  children: [
+                    {
+                      id: 14,
+                      url: "/role",
+                      text: "Year 1",
+                      icon: <PeopleAltSharp />,
+                    },
+                    {
+                      id: 15,
+                      url: "/user",
+                      text: "Year 2",
+                      icon: <PeopleAltSharp />,
+                    },
+                  ],
                 },
                 {
                   id: 8,
                   url: "/user",
                   text: "Batch 2",
-                  icon: <MailIcon />,
+                  icon: <AccountBalance />,
                 },
               ],
             },
@@ -152,7 +170,7 @@ export default function App() {
               id: 9,
               url: "/user",
               text: "Regular",
-              icon: <MailIcon />,
+              icon: <GroupAdd />,
             },
           ],
         },
@@ -160,8 +178,8 @@ export default function App() {
     },
     {
       id: 10,
-      text: "Accounts 1",
-      icon: <InboxIcon />,
+      text: "Accounts 2",
+      icon: <GroupOutlined />,
       children: [
         {
           id: 11,
@@ -182,7 +200,7 @@ export default function App() {
   const getMenuWithChildren = (menu, pl = 2) => {
     return (
       <React.Fragment key={menu.id}>
-        <ListItemButton sx={{ pl }} onClick={() => handleClick(menu)}>
+        <ListItemButton dense sx={{ pl }} onClick={() => handleClick(menu)}>
           <ListItemIcon>{menu.icon}</ListItemIcon>
           <ListItemText primary={menu.text} />
           {isSelectedMenu(menu) ? <ExpandMore /> : <ChevronRightIcon />}
@@ -194,7 +212,7 @@ export default function App() {
                 return getMenuWithChildren(child, pl + 2);
               }
               return (
-                <ListItemButton key={child.id} sx={{ pl: pl + 2 }}>
+                <ListItemButton dense key={child.id} sx={{ pl: pl + 2 }}>
                   <ListItemIcon>{child.icon}</ListItemIcon>
                   <ListItemText primary={child.text} />
                 </ListItemButton>
@@ -254,7 +272,7 @@ export default function App() {
               return getMenuWithChildren(menuItem);
             }
             return (
-              <ListItem key={menuItem.id} disablePadding>
+              <ListItem dense key={menuItem.id} disablePadding>
                 <ListItemButton>
                   <ListItemIcon>{menuItem.icon}</ListItemIcon>
                   <ListItemText primary={menuItem.text} />
