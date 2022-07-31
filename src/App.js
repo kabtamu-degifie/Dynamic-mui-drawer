@@ -78,7 +78,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function App() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [openedMenu, setOpenedMenu] = React.useState([]);
 
   const handleClick = (menu) => {
